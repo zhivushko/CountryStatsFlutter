@@ -1,10 +1,7 @@
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
-
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/Mocks.dart';
 
-/// Реализация CountryRepository на мок-данных.
-/// Интерфейс синхронный, поэтому задержка имитируется только там, где нужно.
 class CountryRepositoryImpl implements CountryRepository {
 
   final Duration delay;
@@ -13,8 +10,6 @@ class CountryRepositoryImpl implements CountryRepository {
 
   @override
   List<Country> getCountries({String? filter}) {
-    // Интерфейс синхронный — delay здесь не применим.
-    // Если нужна имитация задержки, оберните вызов в Future.delayed на уровне UI.
     final all = List<Country>.unmodifiable(mockCountries);
     return all.filterByName(filter);
   }
@@ -26,10 +21,8 @@ class CountryRepositoryImpl implements CountryRepository {
       orElse: () => throw StateError('Country with id=$id not found'),
     );
   }
-}
 
-
-extension CountryRepositoryNeighbours on CountryRepository {
+  @override
   List<Country> getNeighbours(Country country) {
     const maxSize = 5;
     final all = getCountries();

@@ -16,26 +16,40 @@ class Bar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded( // В Compose RowScope.Bar занимает вес (weight(1f))
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            width: 60, // Фиксированная ширина как в Compose (fillMaxWidth(0.3f) внутри Column)
-            height: height,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '${value.toInt()}%',
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(name),
-        ],
+    return Expanded(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+
+          final double calculatedWidth = constraints.maxWidth * 0.3;
+
+          final double clampedWidth = calculatedWidth.clamp(50, 200);
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                width: clampedWidth,
+                height: height,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '${value.toInt()}%',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                name,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          );
+        },
       ),
     );
   }

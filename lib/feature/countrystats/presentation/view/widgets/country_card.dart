@@ -1,4 +1,3 @@
-// lib/ui/components/country_card.dart
 import 'package:flutter/material.dart';
 import 'CardNum.dart';
 import 'CardSurface.dart';
@@ -37,18 +36,18 @@ class CountryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10.0), // spacedBy(10.dp) между Row
+          const SizedBox(height: 10.0),
 
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CardStat(
-                icon: const Icon(Icons.people), // emoji_people
+                icon: const Icon(Icons.people),
                 value: country.popularity,
               ),
               CardStat(
-                icon: const Icon(Icons.attach_money), // attach_money
+                icon: const Icon(Icons.attach_money),
                 value: country.gdp,
               ),
             ],

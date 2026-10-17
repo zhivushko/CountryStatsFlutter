@@ -1,6 +1,6 @@
-// lib/ui/components/card_num.dart
+
 import 'package:flutter/material.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/color_scheme.dart'; // или используйте Theme.of(context)
+import 'package:country_stats_flutter/feature/countrystats/presentation/color_scheme.dart';
 
 class CardNum extends StatelessWidget {
   final int value;

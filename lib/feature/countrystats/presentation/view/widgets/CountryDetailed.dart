@@ -43,7 +43,7 @@ class CountryDetailed extends StatelessWidget {
           CountryList(
             countries: neighbours,
             onCountryClick: onCountryClick,
-            isScrollable: false, // <-- ОТКЛЮЧАЕМ СКРОЛЛ, ТАК КАК ЭКРАН УЖЕ В SCROLLVIEW
+            isScrollable: false,
           ),
         ],
       ],

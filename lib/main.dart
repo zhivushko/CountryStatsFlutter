@@ -5,14 +5,14 @@ import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/Loc
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/ThemeProvide.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/color_scheme.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/CountryRepositoryImpl.dart';
-// Импортируем наш новый файл с навигацией
+import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/navigation/app_router.dart';
 
 void main() {
   runApp(
     MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<CountryRepositoryImpl>(
+        RepositoryProvider<CountryRepository>(
           create: (context) => CountryRepositoryImpl(),
         ),
       ],
@@ -32,12 +32,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Слушаем изменения темы и языка
     final themeMode = context.watch<ThemeProvider>().state;
     final currentLocale = context.watch<LocaleProvider>().state;
 
     return MaterialApp.router(
-      // Используем роутер из отдельного файла
       routerConfig: AppRouter.router,
       theme: lightTheme,
       darkTheme: darkTheme,

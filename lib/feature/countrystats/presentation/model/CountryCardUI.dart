@@ -30,11 +30,3 @@ extension CountryToCardUI on Country {
 extension CountryListToCardsUI on List<Country> {
   List<CountryCardUI> toCardsUI() => map((c) => c.toCardUI()).toList();
 }
-
-
-extension CountryFutureToCardsUI on Future<List<Country>> {
-  Future<List<CountryCardUI>> toCardsUI() async {
-    final countries = await this;
-    return countries.toCardsUI();
-  }
-}
