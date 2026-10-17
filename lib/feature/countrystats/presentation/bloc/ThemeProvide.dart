@@ -15,6 +15,4 @@ class ThemeProvider extends Cubit<ThemeMode>
       emit(ThemeMode.dark);
     }
   }
-
-  void setTheme(ThemeMode mode) => emit(mode);
 }
