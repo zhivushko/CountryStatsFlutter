@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:go_router/go_router.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/LocaleProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,12 +12,11 @@ import 'package:country_stats_flutter/l10n/app_localizations.dart';
 class AppScaffold extends StatelessWidget {
   AppScaffold({super.key});
 
-  final repo = CountryRepositoryImpl();
-
   @override
   Widget build(BuildContext context) {
 
     final l10n = AppLocalizations.of(context)!;
+    final repo = context.read<CountryRepositoryImpl>();
     return Scaffold(
 
       appBar: AppBar(
@@ -38,8 +37,9 @@ class AppScaffold extends StatelessWidget {
       ),
       body: CountryList(
         countries: repo.getCountries().toCardsUI(),
-        onCountryClick: (id) => print('Click: $id'),
-      ),
+    // Меняем переход:
+    onCountryClick: (id) => context.push('/country/$id'),
+    ),
     );
   }
 }

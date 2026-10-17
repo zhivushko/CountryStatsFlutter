@@ -1,42 +1,62 @@
 import 'package:flutter/material.dart';
-
 import '../../model/CountryCardUI.dart';
 import 'country_card.dart';
+import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class CountryList extends StatelessWidget {
   final List<CountryCardUI> countries;
   final void Function(int id) onCountryClick;
+  final bool isScrollable;
 
   const CountryList({
     super.key,
     required this.countries,
     required this.onCountryClick,
+    this.isScrollable = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
 
     if (countries.isEmpty) {
       return Center(
-        child: Text(
-          'Нет результатов',
-          style: Theme.of(context).textTheme.bodyLarge,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            l10n.noResults,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
         ),
       );
     }
 
+    if (isScrollable) {
+      return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: countries.length,
+        itemBuilder: (context, index) {
+          final country = countries[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: CountryCard(
+              country: country,
+              onClick: () => onCountryClick(country.id),
+            ),
+          );
+        },
+      );
+    }
 
-    return ListView.separated(
-      padding: EdgeInsetsDirectional.symmetric(horizontal: 16.0),
-      itemCount: countries.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        final country = countries[index];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 12.0,
+      children: countries.map((country) {
         return CountryCard(
           country: country,
           onClick: () => onCountryClick(country.id),
         );
-      },
+      }).toList(),
     );
   }
 }

@@ -28,7 +28,6 @@ class CountryRepositoryImpl implements CountryRepository {
   }
 }
 
-// ---------- Extension-функции для CountryRepository ----------
 
 extension CountryRepositoryNeighbours on CountryRepository {
   List<Country> getNeighbours(Country country) {
@@ -41,7 +40,6 @@ extension CountryRepositoryNeighbours on CountryRepository {
   }
 }
 
-// ---------- Extension для List<Country> ----------
 
 extension CountryListFilter on List<Country> {
   List<Country> filterByName(String? filter) {
