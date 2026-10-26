@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../model/CountryCardUI.dart';
+import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 import 'country_card.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class CountryList extends StatelessWidget {
-  final List<CountryCardUI> countries;
+  final List<Country> countries;
   final void Function(int id) onCountryClick;
   final bool isScrollable;
 

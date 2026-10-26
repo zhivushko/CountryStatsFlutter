@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/model/CountryCardUI.dart';
+import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 import 'CountryList.dart';
 import 'StatBlock.dart';
@@ -8,7 +8,7 @@ import 'UrbGraphic.dart';
 
 class CountryDetailed extends StatelessWidget {
   final Country country;
-  final List<CountryCardUI> neighbours;
+  final List<Country> neighbours;
   final void Function(int id) onCountryClick;
 
   const CountryDetailed({

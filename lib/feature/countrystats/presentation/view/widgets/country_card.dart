@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'CardNum.dart';
 import 'CardSurface.dart';
 import 'CardStat.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/model/CountryCardUI.dart';
+import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 
 class CountryCard extends StatelessWidget {
-  final CountryCardUI country;
+  final Country country;
   final VoidCallback? onClick;
 
   const CountryCard({

@@ -1,9 +1,9 @@
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/model/CountryCardUI.dart';
+import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 
 class CountryDetailState {
   final Country? country;
-  final List<CountryCardUI> neighbours;
+  final List<Country> neighbours;
   final bool isLoading;
 
   const CountryDetailState({
@@ -14,7 +14,7 @@ class CountryDetailState {
 
   CountryDetailState copyWith({
     Country? country,
-    List<CountryCardUI>? neighbours,
+    List<Country>? neighbours,
     bool? isLoading,
   }) {
     return CountryDetailState(

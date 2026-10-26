@@ -1,5 +1,4 @@
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/model/CountryCardUI.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/model/detail/CountryDetailState.dart';
 
@@ -16,7 +15,7 @@ class CountryDetailCubit extends Cubit<CountryDetailState> {
 
     emit(state.copyWith(
       country: country,
-      neighbours: neighbours.toCardsUI(),
+      neighbours: neighbours,
       isLoading: false,
     ));
 

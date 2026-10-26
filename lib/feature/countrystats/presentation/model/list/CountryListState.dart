@@ -1,8 +1,7 @@
-import 'package:country_stats_flutter/feature/countrystats/presentation/model/CountryCardUI.dart';
-
+import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 class CountryListState {
   final String query;
-  final List<CountryCardUI> items;
+  final List<Country> items;
   final bool isLoading;
 
   const CountryListState({
@@ -13,7 +12,7 @@ class CountryListState {
 
   CountryListState copyWith({
     String? query,
-    List<CountryCardUI>? items,
+    List<Country>? items,
     bool? isLoading,
   }) {
     return CountryListState(
