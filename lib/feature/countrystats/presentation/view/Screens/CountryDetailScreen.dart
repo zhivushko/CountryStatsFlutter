@@ -5,6 +5,7 @@ import 'package:country_stats_flutter/feature/countrystats/presentation/view/wid
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class CountryDetailScreen extends StatelessWidget {
   final int id;
@@ -27,14 +28,30 @@ class _CountryDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<CountryDetailCubit>().state;
+    final l10n = AppLocalizations.of(context)!;
 
-    if (state.isLoading || state.country == null) {
+    if (state.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // ОБОРАЧИВАЕМ В APPSCAFFOLD
+    if (state.country == null) {
+      return AppScaffold(
+        showBackButton: true,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              l10n.noResults, // переиспользуем «Не найдено :(»
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+        ),
+      );
+    }
+
     return AppScaffold(
-      showBackButton: true, // Здесь кнопка назад нужна
+      showBackButton: true,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: CountryDetailed(

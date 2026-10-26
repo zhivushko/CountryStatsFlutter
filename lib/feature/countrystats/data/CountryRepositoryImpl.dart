@@ -15,11 +15,13 @@ class CountryRepositoryImpl implements CountryRepository {
   }
 
   @override
-  Country getCountry(int id) {
-    return mockCountries.firstWhere(
-          (c) => c.id == id,
-      orElse: () => throw StateError('Country with id=$id not found'),
-    );
+  Country? getCountry(int id) {
+
+    for (final country in mockCountries)
+      {
+        if (country.id == id) return country;
+      }
+    return null;
   }
 
   @override
