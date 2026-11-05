@@ -1,27 +1,23 @@
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 
-class CountryDetailState {
-  final Country? country;
+sealed class CountryDetailState {
+  const CountryDetailState();
+}
+
+
+final class CountryDetailLoading extends CountryDetailState {
+  const CountryDetailLoading();
+}
+
+
+final class CountryDetailLoaded extends CountryDetailState {
+  final Country country;
   final List<Country> neighbours;
-  final bool isLoading;
 
-  const CountryDetailState._({
-    required this.country,
-    required this.neighbours,
-    required this.isLoading,
-  });
+  const CountryDetailLoaded({required this.country, required this.neighbours});
+}
 
-  /// когда стейт просто грузится
-  const CountryDetailState.loading()
-      : this._(country: null, neighbours: const [], isLoading: true);
-
-  /// загрузка прошла успешно
-  CountryDetailState.success({
-    required Country this.country,
-    this.neighbours = const [],
-  }) : isLoading = false;
-
-  /// если репозиторий не выдал страну
-  const CountryDetailState.notFound()
-      : this._(country: null, neighbours: const [], isLoading: false);
+// Состояние "не найдено"
+final class CountryDetailNotFound extends CountryDetailState {
+  const CountryDetailNotFound();
 }

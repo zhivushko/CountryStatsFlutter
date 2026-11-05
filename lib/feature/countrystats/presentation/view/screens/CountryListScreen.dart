@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/CountryListCubit.dart';
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
-import 'package:country_stats_flutter/common/widgets/AppScaffold.dart'; // ИМПОРТ
+import 'package:country_stats_flutter/common/widgets/AppScaffold.dart';
+import 'package:country_stats_flutter/feature/countrystats/presentation/model/list/CountryListState.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/CountryList.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
@@ -27,9 +28,9 @@ class _CountryListView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<CountryListCubit>().state;
 
-    // ОБОРАЧИВАЕМ В APPSCAFFOLD
+
     return AppScaffold(
-      showBackButton: false, // На главной кнопка назад не нужна
+      showBackButton: false,
       body: Column(
       children: [
       Padding(
@@ -49,14 +50,16 @@ class _CountryListView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: state.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : CountryList(
-              countries: state.items,
-              onCountryClick: (id) => context.push('/country/$id'),
-              isScrollable: true,
-            ),
-          ),
+            child: switch (state) {
+              CountryListLoading() =>
+                  const Center(child: CircularProgressIndicator()),
+              CountryListLoaded(:final items) => CountryList(
+                countries: items,
+                onCountryClick: (id) => context.push('/country/$id'),
+                isScrollable: true,
+    ),
+    },
+            )
         ],
       ),
     );

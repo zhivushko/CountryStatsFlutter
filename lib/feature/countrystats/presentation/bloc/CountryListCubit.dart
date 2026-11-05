@@ -5,15 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CountryListCubit extends Cubit<CountryListState> {
   final CountryRepository repository;
 
-  CountryListCubit(this.repository) : super(const CountryListState()) {
+  CountryListCubit(this.repository) : super(const CountryListLoading()) {
     search(null);
   }
 
   void search(String? query) {
-    emit(state.copyWith(isLoading: true, query: query ?? ''));
-
-    final countries = repository.getCountries(filter: query);
-    emit(state.copyWith(items: countries, isLoading: false));
-
+    final q = query ?? '';
+    emit(CountryListLoading(query: q));
+    final countries = repository.getCountries(filter: q);
+    emit(CountryListLoaded(query: q, items: countries));
   }
 }

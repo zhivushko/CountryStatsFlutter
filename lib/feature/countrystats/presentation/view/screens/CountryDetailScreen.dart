@@ -1,6 +1,8 @@
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/CountryDetailCubit.dart';
-import 'package:country_stats_flutter/common/widgets/AppScaffold.dart'; // ИМПОРТ
+import 'package:country_stats_flutter/feature/countrystats/presentation/model/detail/CountryDetailState.dart';
+import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/invalid_country_screen.dart';
+import 'package:country_stats_flutter/common/widgets/AppScaffold.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/CountryDetailed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,36 +32,20 @@ class _CountryDetailView extends StatelessWidget {
     final state = context.watch<CountryDetailCubit>().state;
     final l10n = AppLocalizations.of(context)!;
 
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state.country == null) {
-      return AppScaffold(
+    return switch (state) {
+      CountryDetailLoading() => const Center(child: CircularProgressIndicator()),
+      CountryDetailNotFound() => const NotFoundScreen(),
+      CountryDetailLoaded(:final country, :final neighbours) => AppScaffold(
         showBackButton: true,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              l10n.noResults, // переиспользуем «Не найдено :(»
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: CountryDetailed(
+            country: country,
+            neighbours: neighbours,
+            onCountryClick: (newId) => context.push('/country/$newId'),
           ),
         ),
-      );
-    }
-
-    return AppScaffold(
-      showBackButton: true,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: CountryDetailed(
-          country: state.country!,
-          neighbours: state.neighbours,
-          onCountryClick: (newId) => context.push('/country/$newId'),
-        ),
       ),
-    );
+    };
   }
 }

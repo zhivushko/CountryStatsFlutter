@@ -5,19 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CountryDetailCubit extends Cubit<CountryDetailState> {
   final CountryRepository repository;
 
-  CountryDetailCubit(this.repository) : super(const CountryDetailState.loading());
+  CountryDetailCubit(this.repository) : super( CountryDetailLoading());
 
   void loadCountry(int id) {
-    emit(const CountryDetailState.loading());
-
+    emit(const CountryDetailLoading());
     final country = repository.getCountry(id);
-
     if (country == null) {
-      emit(const CountryDetailState.notFound());
+      emit(const CountryDetailNotFound());
       return;
     }
-
-    final neighbours = repository.getNeighbours(country);
-    emit(CountryDetailState.success(country: country, neighbours: neighbours));
+    emit(CountryDetailLoaded(
+      country: country,
+      neighbours: repository.getNeighbours(country),
+    ));
   }
 }
