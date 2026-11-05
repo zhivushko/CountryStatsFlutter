@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'l10n/app_localizations.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/LocaleProvider.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/ThemeProvide.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/color_scheme.dart';
+import 'package:country_stats_flutter/common/theme/color_scheme.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/CountryRepositoryImpl.dart';
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/navigation/app_router.dart';
+import 'package:country_stats_flutter/common/navigation/app_router.dart';
 
 void main() {
   runApp(

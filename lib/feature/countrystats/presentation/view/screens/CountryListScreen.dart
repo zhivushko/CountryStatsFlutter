@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/CountryListCubit.dart';
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/AppScaffold.dart'; // ИМПОРТ
+import 'package:country_stats_flutter/common/widgets/AppScaffold.dart'; // ИМПОРТ
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/CountryList.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
@@ -31,9 +31,9 @@ class _CountryListView extends StatelessWidget {
     return AppScaffold(
       showBackButton: false, // На главной кнопка назад не нужна
       body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+      children: [
+      Padding(
+      padding: const EdgeInsets.all(16.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: l10n.search,

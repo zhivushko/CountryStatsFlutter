@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
-import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 import 'CountryList.dart';
 import 'StatBlock.dart';

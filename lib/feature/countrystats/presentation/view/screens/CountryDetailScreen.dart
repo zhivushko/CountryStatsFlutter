@@ -1,6 +1,6 @@
 import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/CountryDetailCubit.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/AppScaffold.dart'; // ИМПОРТ
+import 'package:country_stats_flutter/common/widgets/AppScaffold.dart'; // ИМПОРТ
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/CountryDetailed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

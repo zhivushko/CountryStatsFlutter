@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/screens/CountryListScreen.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/screens/CountryDetailScreen.dart';
-import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/AppScaffold.dart';
+import 'package:country_stats_flutter/common/widgets/AppScaffold.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class AppRouter {
