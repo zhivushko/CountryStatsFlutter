@@ -20,9 +20,7 @@ class AppRouter {
 
           return CustomTransitionPage(
             key: state.pageKey,
-            child: id == null
-                ? const _InvalidCountryIdScreen()
-                : CountryDetailScreen(id: id),
+            child: CountryDetailScreen(id: id),
             transitionDuration: const Duration(milliseconds: 300),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return SlideTransition(
@@ -38,27 +36,4 @@ class AppRouter {
       ),
     ],
   );
-}
-
-class _InvalidCountryIdScreen extends StatelessWidget {
-  const _InvalidCountryIdScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return AppScaffold(
-      showBackButton: true,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            l10n.noResults,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        ),
-      ),
-    );
-  }
 }

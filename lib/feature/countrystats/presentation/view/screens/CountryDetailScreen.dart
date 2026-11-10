@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class CountryDetailScreen extends StatelessWidget {
-  final int id;
+  final int? id;
 
   const CountryDetailScreen({super.key, required this.id});
 
