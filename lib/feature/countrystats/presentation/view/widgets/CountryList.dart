@@ -5,7 +5,7 @@ import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class CountryList extends StatelessWidget {
   final List<Country> countries;
-  final void Function(int id) onCountryClick;
+  final void Function(String id) onCountryClick;
   final bool isScrollable;
 
   const CountryList({

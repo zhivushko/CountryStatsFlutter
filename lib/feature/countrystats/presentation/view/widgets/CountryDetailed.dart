@@ -8,7 +8,7 @@ import 'UrbGraphic.dart';
 class CountryDetailed extends StatelessWidget {
   final Country country;
   final List<Country> neighbours;
-  final void Function(int id) onCountryClick;
+  final void Function(String id) onCountryClick;
 
   const CountryDetailed({
     super.key,
@@ -33,7 +33,8 @@ class CountryDetailed extends StatelessWidget {
         StatBlock(country: country),
         const SizedBox(height: 16.0),
 
-        UrbGraphic(country: country),
+        if (country.urbTot != null && country.rurTot != null)
+          UrbGraphic(urbTot: country.urbTot!, rurTot: country.rurTot!,),
 
         if (neighbours.isNotEmpty) ...[
           const SizedBox(height: 16.0),

@@ -16,7 +16,7 @@ class AppRouter {
       GoRoute(
         path: '/country/:id',
         pageBuilder: (context, state) {
-          final id = int.tryParse(state.pathParameters['id'] ?? '');
+          final id = (state.pathParameters['id'] ?? '');
 
           return CustomTransitionPage(
             key: state.pageKey,

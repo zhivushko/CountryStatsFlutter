@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'CardNum.dart';
+import 'card_id.dart';
 import 'CardSurface.dart';
 import 'CardStat.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
@@ -24,9 +24,7 @@ class CountryCard extends StatelessWidget {
 
           Row(
             children: [
-              CardNum(country.id),
-              const SizedBox(width: 12.0),
-              Text(country.code),
+              CardID(country.id),
               const SizedBox(width: 12.0),
               Expanded(
                 child: Text(

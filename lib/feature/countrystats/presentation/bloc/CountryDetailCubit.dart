@@ -7,7 +7,7 @@ class CountryDetailCubit extends Cubit<CountryDetailState> {
 
   CountryDetailCubit(this.repository) : super( CountryDetailLoading());
 
-  void loadCountry(int? id) {
+  void loadCountry(String? id) {
     if (id==null)
       {
         emit(const CountryDetailNotFound());
