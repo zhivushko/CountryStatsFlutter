@@ -1,0 +1,17 @@
+{
+  "@@locale": "ru",
+  "appName": "Статистика стран",
+  "countryName": "Название",
+  "countryCapital": "Столица",
+  "countryRegion": "Регион",
+  "countryPopularity": "Население",
+  "countryUrb": "Городское население",
+  "countryRur": "Сельское население",
+  "countryGdp": "ВВП",
+  "countryCode": "Код страны",
+  "peopleUnit": "чел.",
+  "countryNeighbours": "Страны-соседи",
+  "noResults": "Не найдено :(",
+  "urbanization": "Урбанизация",
+  "search": "Поиск"
+}

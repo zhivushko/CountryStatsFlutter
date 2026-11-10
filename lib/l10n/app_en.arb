@@ -1,0 +1,59 @@
+{
+  "@@locale": "en",
+  "appName": "Country Stats",
+  "@appName": {
+    "description": "Название приложения"
+  },
+  "countryName": "Name",
+  "@countryName": {
+    "description": "Заголовок поля 'Название страны'"
+  },
+  "countryCapital": "Capital",
+  "@countryCapital": {
+    "description": "Заголовок поля 'Столица'"
+  },
+  "countryRegion": "Region",
+  "@countryRegion": {
+    "description": "Заголовок поля 'Регион'"
+  },
+  "countryPopularity": "Population",
+  "@countryPopularity": {
+    "description": "Заголовок поля 'Население'"
+  },
+  "countryUrb": "Urban population",
+  "@countryUrb": {
+    "description": "Заголовок поля 'Городское население'"
+  },
+  "countryRur": "Rural population",
+  "@countryRur": {
+    "description": "Заголовок поля 'Сельское население'"
+  },
+  "countryGdp": "GDP",
+  "@countryGdp": {
+    "description": "Заголовок поля 'ВВП'"
+  },
+  "countryCode": "Country Code",
+  "@countryCode": {
+    "description": "Заголовок поля 'Код страны'"
+  },
+  "peopleUnit": "people",
+  "@peopleUnit": {
+    "description": "Единица измерения для населения"
+  },
+  "countryNeighbours": "Country neighbours",
+  "@countryNeighbours": {
+    "description": "Заголовок раздела 'Страны-соседи'"
+  },
+  "noResults": "Not found :(",
+  "@noResults": {
+    "description": "Сообщение, когда поиск не дал результатов"
+  },
+  "urbanization": "Urbanization",
+  "@urbanization": {
+    "description": "Заголовок поля 'Урбанизация'"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Подсказка/кнопка поиска"
+  }
+}
