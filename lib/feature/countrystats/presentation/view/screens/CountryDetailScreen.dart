@@ -1,4 +1,4 @@
-import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
+import 'package:country_stats_flutter/feature/countrystats/domain/i_network_country_repository.dart'; // <-- ИЗМЕНИЛИ ИМПОРТ
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/CountryDetailCubit.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/model/detail/CountryDetailState.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/invalid_country_screen.dart';
@@ -17,15 +17,18 @@ class CountryDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CountryDetailCubit(context.read<CountryRepository>())
-        ..loadCountry(id),
-      child: const _CountryDetailView(),
+      create: (context) =>
+          CountryDetailCubit(context.read<INetworkCountryRepository>())
+            ..loadCountry(id),
+      child: _CountryDetailView(id: id),
     );
   }
 }
 
 class _CountryDetailView extends StatelessWidget {
-  const _CountryDetailView();
+  final String? id;
+
+  const _CountryDetailView({required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,23 @@ class _CountryDetailView extends StatelessWidget {
             country: country,
             neighbours: neighbours,
             onCountryClick: (newId) => context.push('/country/$newId'),
+          ),
+        ),
+      ),
+      CountryDetailError() => AppScaffold(
+        showBackButton: true,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.errorLoad),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () =>
+                    context.read<CountryDetailCubit>().loadCountry(id),
+                child: Text(l10n.retry),
+              ),
+            ],
           ),
         ),
       ),
