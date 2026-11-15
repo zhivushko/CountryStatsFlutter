@@ -21,4 +21,23 @@ class Country {
     this.rurTot,
     this.gdp,
   });
+
+  Country copyWith({
+    int? popularity,
+    int? gdp,
+    double? urbTot,
+    double? rurTot,
+  }) {
+    return Country(
+      id: id,
+      isoCode: isoCode,
+      name: name,
+      popularity: popularity ?? this.popularity,
+      capital: capital,
+      region: region,
+      urbTot: urbTot ?? this.urbTot,
+      rurTot: rurTot ?? this.rurTot,
+      gdp: gdp ?? this.gdp,
+    );
+  }
 }
