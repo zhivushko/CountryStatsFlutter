@@ -13,5 +13,7 @@
   "countryNeighbours": "Страны-соседи",
   "noResults": "Не найдено :(",
   "urbanization": "Урбанизация",
-  "search": "Поиск"
+  "search": "Поиск",
+  "errorLoad" : "Ошибка загрузки",
+  "retry" :  "Обновить"
 }

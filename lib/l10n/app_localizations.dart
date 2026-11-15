@@ -181,6 +181,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search'**
   String get search;
+
+  /// Обновление страницы
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Ошибка загрузки
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading'**
+  String get errorLoad;
 }
 
 class _AppLocalizationsDelegate
