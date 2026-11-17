@@ -1,27 +1,38 @@
-import 'package:country_stats_flutter/feature/countrystats/domain/ICountryRepository.dart';
+import 'package:country_stats_flutter/feature/countrystats/domain/i_network_country_repository.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/model/detail/CountryDetailState.dart';
+import 'package:country_stats_flutter/common/network/load_exception.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CountryDetailCubit extends Cubit<CountryDetailState> {
-  final CountryRepository repository;
+  final INetworkCountryRepository repository;
 
-  CountryDetailCubit(this.repository) : super( CountryDetailLoading());
+  CountryDetailCubit(this.repository) : super(const CountryDetailLoading());
 
-  void loadCountry(int? id) {
-    if (id==null)
-      {
-        emit(const CountryDetailNotFound());
-        return;
-      }
-    emit(const CountryDetailLoading());
-    final country = repository.getCountry(id);
-    if (country == null) {
+  Future<void> loadCountry(String? id) async {
+    if (id == null || id.isEmpty) {
       emit(const CountryDetailNotFound());
       return;
     }
-    emit(CountryDetailLoaded(
-      country: country,
-      neighbours: repository.getNeighbours(country),
-    ));
+
+    emit(const CountryDetailLoading());
+    try {
+      final country = await repository.getCountry(id);
+      if (country == null) {
+        if (isClosed) return;
+        emit(const CountryDetailNotFound());
+        return;
+      }
+
+      final neighbours = await repository.getNeighbours(country);
+      if (isClosed) return;
+
+      emit(CountryDetailLoaded(
+        country: country,
+        neighbours: neighbours,
+      ));
+    } on LoadException {
+      if (isClosed) return;
+      emit(const CountryDetailError());
+    }
   }
 }

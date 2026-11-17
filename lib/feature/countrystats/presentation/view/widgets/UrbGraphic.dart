@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/utils/ChartUtils.dart';
 import 'package:country_stats_flutter/l10n/app_localizations.dart';
 import 'bar.dart';
@@ -8,9 +7,10 @@ const Color _urbColor = Color(0xFF10C300);
 const Color _rurColor = Color(0xFF4A90E2);
 
 class UrbGraphic extends StatelessWidget {
-  final Country country;
+  final double urbTot;
+  final double rurTot;
 
-  const UrbGraphic({super.key, required this.country});
+  const UrbGraphic({super.key, required this.urbTot, required this.rurTot});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +29,14 @@ class UrbGraphic extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Bar(
-              value: country.urbTot,
-              height: country.urbTot.calculateBarHeight(),
+              value: urbTot,
+              height: urbTot.calculateBarHeight(),
               color: _urbColor,
               name: l10n.countryUrb,
             ),
             Bar(
-              value: country.rurTot,
-              height: country.rurTot.calculateBarHeight(),
+              value: rurTot,
+              height: rurTot.calculateBarHeight(),
               color: _rurColor,
               name: l10n.countryRur,
             ),

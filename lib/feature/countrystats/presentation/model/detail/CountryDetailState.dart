@@ -17,7 +17,11 @@ final class CountryDetailLoaded extends CountryDetailState {
   const CountryDetailLoaded({required this.country, required this.neighbours});
 }
 
-// Состояние "не найдено"
+
 final class CountryDetailNotFound extends CountryDetailState {
   const CountryDetailNotFound();
+}
+
+final class CountryDetailError extends CountryDetailState {
+  const CountryDetailError();
 }

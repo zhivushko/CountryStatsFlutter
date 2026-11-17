@@ -15,7 +15,7 @@ class CountryRepositoryImpl implements CountryRepository {
   }
 
   @override
-  Country? getCountry(int id) {
+  Country? getCountry(String id) {
 
     for (final country in mockCountries)
       {
