@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/api/world_bank_indicators.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/data_sources/i_country_data_source.dart';
+import 'package:country_stats_flutter/feature/countrystats/data/dto/country_dto.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/mappers/country_mapper.dart';
 import 'package:country_stats_flutter/feature/countrystats/domain/country_page.dart';
 import 'package:country_stats_flutter/feature/countrystats/domain/i_network_country_repository.dart';
@@ -19,10 +20,8 @@ class NetworkCountryRepositoryImpl implements INetworkCountryRepository {
 
   Future<void>? _baseFuture;
   Future<void>? _gdpFuture;
-  Future<void>? _detailIndicatorsFuture;
 
   bool _gdpLoaded = false;
-  bool _detailIndicatorsLoaded = false;
 
   @override
   Future<CountryPage> getCountries({
@@ -59,22 +58,39 @@ class NetworkCountryRepositoryImpl implements INetworkCountryRepository {
     final normalized = code.trim().toUpperCase();
     if (normalized.isEmpty) return null;
 
-    await _ensureBase();
-    await _ensureGdp();
-    await _ensureDetailIndicators();
+    final results = await Future.wait<Object?>([
+      _dataSource.getCountry(normalized),
+      _dataSource.getCountryIndicator(
+        normalized,
+        WorldBankIndicators.population,
+        date: WorldBankIndicators.year,
+      ),
+      _dataSource.getCountryIndicator(
+        normalized,
+        WorldBankIndicators.gdp,
+        date: WorldBankIndicators.year,
+      ),
+      _dataSource.getCountryIndicator(
+        normalized,
+        WorldBankIndicators.urbanShare,
+        date: WorldBankIndicators.year,
+      ),
+      _dataSource.getCountryIndicator(
+        normalized,
+        WorldBankIndicators.ruralShare,
+        date: WorldBankIndicators.year,
+      ),
+    ]);
 
-    final countries = _countries ?? const <Country>[];
-    for (final country in countries) {
-      if (country.id.toUpperCase() == normalized ||
-          country.isoCode.toUpperCase() == normalized) {
-        return country;
-      }
-    }
-
-    final dto = await _dataSource.getCountry(normalized);
+    final dto = results[0] as CountryDto?;
     if (dto == null || dto.isAggregate) return null;
 
-    return dto.toModel();
+    return dto.toModel(
+      popularity: (results[1] as num?)?.round(),
+      gdp: (results[2] as num?)?.round(),
+      urbTot: (results[3] as num?)?.toDouble(),
+      rurTot: (results[4] as num?)?.toDouble(),
+    );
   }
 
   @override
@@ -167,46 +183,6 @@ class NetworkCountryRepositoryImpl implements INetworkCountryRepository {
     } catch (_) {
       _gdpFuture = null;
       rethrow;
-    }
-  }
-
-  Future<void> _ensureDetailIndicators() {
-    if (_detailIndicatorsLoaded) return Future<void>.value();
-
-    final cached = _detailIndicatorsFuture;
-    if (cached != null) return cached;
-
-    final future = _loadDetailIndicators();
-    _detailIndicatorsFuture = future;
-    return future;
-  }
-
-  Future<void> _loadDetailIndicators() async {
-    try {
-      final urban = await _dataSource.getIndicatorValues(
-        WorldBankIndicators.urbanShare,
-        date: WorldBankIndicators.year,
-      );
-      final rural = await _dataSource.getIndicatorValues(
-        WorldBankIndicators.ruralShare,
-        date: WorldBankIndicators.year,
-      );
-
-      final countries = _countries;
-      if (countries != null) {
-        _countries = countries
-            .map(
-              (country) => country.copyWith(
-                urbTot: urban[country.id.toUpperCase()]?.toDouble(),
-                rurTot: rural[country.id.toUpperCase()]?.toDouble(),
-              ),
-            )
-            .toList(growable: false);
-      }
-
-      _detailIndicatorsLoaded = true;
-    } catch (_) {
-      _detailIndicatorsFuture = null;
     }
   }
 

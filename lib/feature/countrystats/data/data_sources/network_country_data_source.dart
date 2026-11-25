@@ -81,6 +81,27 @@ class NetworkCountryDataSource implements ICountryDataSource {
     }
   }
 
+  @override
+  Future<num?> getCountryIndicator(
+    String countryCode,
+    String indicatorCode, {
+    String? date,
+  }) async {
+    try {
+      return await _api.getCountryIndicator(
+        countryCode,
+        indicatorCode,
+        date: date,
+      );
+    } on DioException {
+      throw const NetworkLoadException();
+    } on CheckedFromJsonException {
+      throw const ServerLoadException();
+    } on FormatException {
+      throw const ServerLoadException();
+    }
+  }
+
   void _collectValues(List<IndicatorRowDto> rows, Map<String, num> target) {
     for (final row in rows) {
       final value = row.value;

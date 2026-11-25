@@ -72,6 +72,28 @@ class WorldBankApi {
     return CountryDto.fromJson(row);
   }
 
+  Future<num?> getCountryIndicator(
+    String countryCode,
+    String indicatorCode, {
+    String? date,
+  }) async {
+    final response = await _dio.get(
+      '/country/$countryCode/indicator/$indicatorCode',
+      queryParameters: {'date': ?date},
+    );
+    final data = response.data;
+    if (_hasApiMessage(data)) return null;
+
+    final (_, rows) = _split(data);
+    for (final row in rows) {
+      if (row is! Map<String, dynamic>) continue;
+      final dto = IndicatorRowDto.fromJson(row);
+      if (dto.value != null) return dto.value;
+    }
+
+    return null;
+  }
+
   bool _hasApiMessage(Object? data) =>
       data is List &&
       data.isNotEmpty &&
