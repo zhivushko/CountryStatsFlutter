@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:country_stats_flutter/common/network/load_exception.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/api/world_bank_api.dart';
 import 'package:country_stats_flutter/feature/countrystats/data/dto/country_dto.dart';
@@ -29,6 +30,8 @@ class NetworkCountryDataSource implements ICountryDataSource {
       return countries;
     } on DioException {
       throw const NetworkLoadException();
+    } on CheckedFromJsonException {
+      throw const ServerLoadException();
     } on FormatException {
       throw const ServerLoadException();
     }
@@ -58,6 +61,8 @@ class NetworkCountryDataSource implements ICountryDataSource {
       return values;
     } on DioException {
       throw const NetworkLoadException();
+    } on CheckedFromJsonException {
+      throw const ServerLoadException();
     } on FormatException {
       throw const ServerLoadException();
     }
@@ -69,6 +74,8 @@ class NetworkCountryDataSource implements ICountryDataSource {
       return await _api.getCountry(code);
     } on DioException {
       throw const NetworkLoadException();
+    } on CheckedFromJsonException {
+      throw const ServerLoadException();
     } on FormatException {
       throw const ServerLoadException();
     }

@@ -6,15 +6,21 @@ part of 'country_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CountryDto _$CountryDtoFromJson(Map<String, dynamic> json) => CountryDto(
-  id: json['id'] as String,
-  iso2Code: json['iso2Code'] as String,
-  name: json['name'] as String,
-  capital: json['capitalCity'] as String?,
-  region: json['region'] == null
-      ? null
-      : RegionDto.fromJson(json['region'] as Map<String, dynamic>),
-);
+CountryDto _$CountryDtoFromJson(Map<String, dynamic> json) =>
+    $checkedCreate('CountryDto', json, ($checkedConvert) {
+      final val = CountryDto(
+        id: $checkedConvert('id', (v) => v as String),
+        iso2Code: $checkedConvert('iso2Code', (v) => v as String),
+        name: $checkedConvert('name', (v) => v as String),
+        capital: $checkedConvert('capitalCity', (v) => v as String?),
+        region: $checkedConvert(
+          'region',
+          (v) =>
+              v == null ? null : RegionDto.fromJson(v as Map<String, dynamic>),
+        ),
+      );
+      return val;
+    }, fieldKeyMap: const {'capital': 'capitalCity'});
 
 Map<String, dynamic> _$CountryDtoToJson(CountryDto instance) =>
     <String, dynamic>{
@@ -25,8 +31,14 @@ Map<String, dynamic> _$CountryDtoToJson(CountryDto instance) =>
       'region': instance.region,
     };
 
-RegionDto _$RegionDtoFromJson(Map<String, dynamic> json) =>
-    RegionDto(value: json['value'] as String?);
+RegionDto _$RegionDtoFromJson(Map<String, dynamic> json) => $checkedCreate(
+  'RegionDto',
+  json,
+  ($checkedConvert) {
+    final val = RegionDto(value: $checkedConvert('value', (v) => v as String?));
+    return val;
+  },
+);
 
 Map<String, dynamic> _$RegionDtoToJson(RegionDto instance) => <String, dynamic>{
   'value': instance.value,
