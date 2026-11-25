@@ -2,15 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:country_stats_flutter/common/theme/color_scheme.dart';
 
-class CardNum extends StatelessWidget {
-  final int value;
+class CardID extends StatelessWidget {
+  final String value;
 
-  const CardNum(this.value, {super.key});
+  const CardID(this.value, {super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    final formatted = '#${value.toString().padLeft(3, '0')}';
 
     return Container(
 
@@ -23,7 +21,7 @@ class CardNum extends StatelessWidget {
         vertical: 0.0,
       ),
       child: Text(
-        formatted,
+        value
       ),
     );
   }

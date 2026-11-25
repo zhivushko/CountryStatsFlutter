@@ -50,4 +50,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get search => 'Search';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get errorLoad => 'Error Loading';
 }

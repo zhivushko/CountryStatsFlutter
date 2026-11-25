@@ -55,5 +55,13 @@
   "search": "Search",
   "@search": {
     "description": "Подсказка/кнопка поиска"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Обновление страницы"
+  },
+  "errorLoad": "Error Loading",
+  "@errorLoad": {
+    "description": "Ошибка загрузки"
   }
 }

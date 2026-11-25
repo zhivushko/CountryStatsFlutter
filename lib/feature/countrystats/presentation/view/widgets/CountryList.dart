@@ -5,14 +5,16 @@ import 'package:country_stats_flutter/l10n/app_localizations.dart';
 
 class CountryList extends StatelessWidget {
   final List<Country> countries;
-  final void Function(int id) onCountryClick;
+  final void Function(String id) onCountryClick;
   final bool isScrollable;
+  final ScrollController? controller;
 
   const CountryList({
     super.key,
     required this.countries,
     required this.onCountryClick,
     this.isScrollable = true,
+    this.controller,
   });
 
   @override
@@ -33,7 +35,8 @@ class CountryList extends StatelessWidget {
 
     if (isScrollable) {
       return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        controller: controller,
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
         itemCount: countries.length,
         itemBuilder: (context, index) {
           final country = countries[index];
