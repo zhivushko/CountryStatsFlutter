@@ -1,4 +1,4 @@
-import 'package:country_stats_flutter/feature/countrystats/domain/i_network_country_repository.dart'; // <-- ИЗМЕНИЛИ ИМПОРТ
+import 'package:country_stats_flutter/feature/countrystats/domain/i_network_country_repository.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/bloc/CountryDetailCubit.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/model/detail/CountryDetailState.dart';
 import 'package:country_stats_flutter/feature/countrystats/presentation/view/widgets/invalid_country_screen.dart';
