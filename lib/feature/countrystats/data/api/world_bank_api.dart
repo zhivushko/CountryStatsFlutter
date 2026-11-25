@@ -60,8 +60,10 @@ class WorldBankApi {
 
   Future<CountryDto?> getCountry(String code) async {
     final response = await _dio.get('/country/$code');
+    final data = response.data;
+    if (_hasApiMessage(data)) return null;
 
-    final (_, rows) = _split(response.data);
+    final (_, rows) = _split(data);
     if (rows.isEmpty) return null;
 
     final row = rows.first;
@@ -69,6 +71,12 @@ class WorldBankApi {
 
     return CountryDto.fromJson(row);
   }
+
+  bool _hasApiMessage(Object? data) =>
+      data is List &&
+      data.isNotEmpty &&
+      data.first is Map &&
+      (data.first as Map).containsKey('message');
 
   (Map<String, dynamic>, List<dynamic>) _split(Object? data) {
     if (data is! List || data.length < 2) {
