@@ -16,13 +16,6 @@ class NetworkCountryRepositoryImpl implements INetworkCountryRepository {
 
   NetworkCountryRepositoryImpl(this._dataSource);
 
-  List<Country>? _countries;
-
-  Future<void>? _baseFuture;
-  Future<void>? _gdpFuture;
-
-  bool _gdpLoaded = false;
-
   @override
   Future<CountryPage> getCountries({
     int page = 1,
@@ -30,26 +23,39 @@ class NetworkCountryRepositoryImpl implements INetworkCountryRepository {
     String? filter,
     bool withGdp = false,
   }) async {
-    await _ensureBase();
-    if (withGdp) await _ensureGdp();
-
-    final filtered = _filteredCountries(filter);
-    final total = filtered.length;
-
     final size = perPage > 0 ? perPage : _defaultPerPage;
     final pageNumber = page < 1 ? 1 : page;
-    final start = (pageNumber - 1) * size;
-    final end = min(start + size, total);
-    final items = start >= total
-        ? const <Country>[]
-        : filtered.sublist(start, end);
+    final needle = (filter ?? '').trim().toLowerCase();
+
+    if (needle.isNotEmpty) {
+      return _searchCountries(
+        needle: needle,
+        page: pageNumber,
+        perPage: size,
+        withGdp: withGdp,
+      );
+    }
+
+    final pageResult = await _dataSource.getCountriesPage(
+      page: pageNumber,
+      perPage: size,
+    );
+
+    final validDtos = _validCountryDtos(pageResult.items);
+    final enriched = await Future.wait(
+      validDtos.map((dto) => _enrichSummary(dto, withGdp: withGdp)),
+    );
+
+    final items = enriched
+        .where((country) => _hasEnoughData(country, withGdp: withGdp))
+        .toList(growable: false);
 
     return CountryPage(
       items: items,
-      page: pageNumber,
-      total: total,
-      hasMore: end < total,
-      isGdpLoaded: _gdpLoaded,
+      page: pageResult.page,
+      total: items.length,
+      hasMore: pageResult.page < pageResult.pages,
+      isGdpLoaded: withGdp,
     );
   }
 
@@ -98,123 +104,103 @@ class NetworkCountryRepositoryImpl implements INetworkCountryRepository {
     final region = country.region;
     if (region == null) return const [];
 
-    await _ensureBase();
-    await _ensureGdp();
-
-    final countries = _countries ?? const <Country>[];
-    final neighbours = countries
+    final dtos = await _dataSource.getCountries();
+    final sameRegion = _validCountryDtos(dtos)
         .where(
-          (neighbour) =>
-              neighbour.region == region &&
-              neighbour.id != country.id &&
-              _hasEnoughData(neighbour),
+          (dto) =>
+              dto.region?.value?.trim() == region &&
+              dto.id.trim().toUpperCase() != country.id.toUpperCase(),
         )
         .toList()
-      ..sort(_byName);
+      ..sort((a, b) => _byDtoName(a, b));
 
-    return neighbours.take(_neighboursLimit).toList(growable: false);
+    final candidates = sameRegion.take(_neighboursLimit);
+    return Future.wait(
+      candidates.map((dto) => _enrichSummary(dto, withGdp: true)),
+    );
   }
 
-  Future<void> _ensureBase() {
-    final cached = _baseFuture;
-    if (cached != null) return cached;
+  Future<CountryPage> _searchCountries({
+    required String needle,
+    required int page,
+    required int perPage,
+    required bool withGdp,
+  }) async {
+    final dtos = await _dataSource.getCountries();
+    final matched = _validCountryDtos(dtos)
+        .where(
+          (dto) =>
+              dto.name.toLowerCase().contains(needle) ||
+              dto.id.toLowerCase().contains(needle) ||
+              dto.iso2Code.toLowerCase().contains(needle),
+        )
+        .toList()
+      ..sort(_byDtoName);
 
-    final future = _loadBase();
-    _baseFuture = future;
-    return future;
+    final total = matched.length;
+    final start = (page - 1) * perPage;
+    final end = min(start + perPage, total);
+    final slice = start >= total ? const <CountryDto>[] : matched.sublist(start, end);
+
+    final enriched = await Future.wait(
+      slice.map((dto) => _enrichSummary(dto, withGdp: withGdp)),
+    );
+    final items = enriched
+        .where((country) => _hasEnoughData(country, withGdp: withGdp))
+        .toList(growable: false);
+
+    return CountryPage(
+      items: items,
+      page: page,
+      total: total,
+      hasMore: end < total,
+      isGdpLoaded: withGdp,
+    );
   }
 
-  Future<void> _loadBase() async {
-    try {
-      final dtos = await _dataSource.getCountries();
-      final population = await _dataSource.getIndicatorValues(
+  Future<Country> _enrichSummary(CountryDto dto, {required bool withGdp}) async {
+    final code = dto.id.trim().toUpperCase();
+    final results = await Future.wait<num?>([
+      _dataSource.getCountryIndicator(
+        code,
         WorldBankIndicators.population,
         date: WorldBankIndicators.year,
-      );
+      ),
+      if (withGdp)
+        _dataSource.getCountryIndicator(
+          code,
+          WorldBankIndicators.gdp,
+          date: WorldBankIndicators.year,
+        ),
+    ]);
 
-      final countries = <Country>[];
-      for (final dto in dtos) {
-        if (dto.isAggregate) continue;
-
-        final name = dto.name.trim();
-        final id = dto.id.trim().toUpperCase();
-        if (name.isEmpty || id.isEmpty) continue;
-
-        countries.add(dto.toModel(popularity: population[id]?.round()));
-      }
-
-      _countries = countries;
-    } catch (_) {
-      _baseFuture = null;
-      rethrow;
-    }
+    return dto.toModel(
+      popularity: results[0]?.round(),
+      gdp: withGdp ? results[1]?.round() : null,
+    );
   }
 
-  Future<void> _ensureGdp() {
-    if (_gdpLoaded) return Future<void>.value();
-
-    final cached = _gdpFuture;
-    if (cached != null) return cached;
-
-    final future = _loadGdp();
-    _gdpFuture = future;
-    return future;
+  List<CountryDto> _validCountryDtos(List<CountryDto> dtos) {
+    return dtos
+        .where(
+          (dto) =>
+              !dto.isAggregate &&
+              dto.name.trim().isNotEmpty &&
+              dto.id.trim().isNotEmpty,
+        )
+        .toList(growable: false);
   }
 
-  Future<void> _loadGdp() async {
-    try {
-      final values = await _dataSource.getIndicatorValues(
-        WorldBankIndicators.gdp,
-        date: WorldBankIndicators.year,
-      );
-
-      final countries = _countries;
-      if (countries != null) {
-        _countries = countries
-            .map(
-              (country) => country.copyWith(
-                gdp: values[country.id.toUpperCase()]?.round(),
-              ),
-            )
-            .toList(growable: false);
-      }
-
-      _gdpLoaded = true;
-    } catch (_) {
-      _gdpFuture = null;
-      rethrow;
-    }
-  }
-
-  bool _hasEnoughData(Country country) {
+  bool _hasEnoughData(Country country, {required bool withGdp}) {
     final population = country.popularity;
     if (population == null || population <= 0) return false;
-
-    if (!_gdpLoaded) return true;
+    if (!withGdp) return true;
 
     final gdp = country.gdp;
     return gdp != null && gdp > 0;
   }
 
-  List<Country> _filteredCountries(String? filter) {
-    final source = _countries ?? const <Country>[];
-    final needle = (filter ?? '').trim().toLowerCase();
-
-    return source
-        .where((country) {
-          if (!_hasEnoughData(country)) return false;
-
-          if (needle.isEmpty) return true;
-
-          return country.name.toLowerCase().contains(needle) ||
-              country.id.toLowerCase().contains(needle) ||
-              country.isoCode.toLowerCase().contains(needle);
-        })
-        .toList()
-      ..sort(_byName);
-  }
-
-  static int _byName(Country a, Country b) {
+  static int _byDtoName(CountryDto a, CountryDto b) {
     final byName = a.name.toLowerCase().compareTo(b.name.toLowerCase());
     return byName != 0 ? byName : a.id.compareTo(b.id);
   }

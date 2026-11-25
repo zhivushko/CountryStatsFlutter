@@ -1,5 +1,7 @@
 import 'package:country_stats_flutter/feature/countrystats/data/Country.dart';
 
+enum GdpStatus { loading, loaded, failed }
+
 sealed class CountryListState {
   const CountryListState();
 }
@@ -15,9 +17,7 @@ final class CountryListLoaded extends CountryListState {
   final int total;
   final bool hasMore;
   final bool isLoadingMore;
-  final bool isGdpLoading;
-  final bool isGdpLoaded;
-  final bool gdpFailed;
+  final GdpStatus gdpStatus;
 
   const CountryListLoaded({
     required this.query,
@@ -25,9 +25,7 @@ final class CountryListLoaded extends CountryListState {
     required this.total,
     required this.hasMore,
     this.isLoadingMore = false,
-    this.isGdpLoading = false,
-    this.isGdpLoaded = false,
-    this.gdpFailed = false,
+    this.gdpStatus = GdpStatus.loading,
   });
 
   CountryListLoaded copyWith({
@@ -35,9 +33,7 @@ final class CountryListLoaded extends CountryListState {
     int? total,
     bool? hasMore,
     bool? isLoadingMore,
-    bool? isGdpLoading,
-    bool? isGdpLoaded,
-    bool? gdpFailed,
+    GdpStatus? gdpStatus,
   }) {
     return CountryListLoaded(
       query: query,
@@ -45,9 +41,7 @@ final class CountryListLoaded extends CountryListState {
       total: total ?? this.total,
       hasMore: hasMore ?? this.hasMore,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      isGdpLoading: isGdpLoading ?? this.isGdpLoading,
-      isGdpLoaded: isGdpLoaded ?? this.isGdpLoaded,
-      gdpFailed: gdpFailed ?? this.gdpFailed,
+      gdpStatus: gdpStatus ?? this.gdpStatus,
     );
   }
 }

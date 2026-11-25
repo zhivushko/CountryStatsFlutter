@@ -14,6 +14,22 @@ class NetworkCountryDataSource implements ICountryDataSource {
   NetworkCountryDataSource(this._api);
 
   @override
+  Future<({List<CountryDto> items, int page, int pages})> getCountriesPage({
+    int page = 1,
+    int perPage = 20,
+  }) async {
+    try {
+      return await _api.getCountriesPage(page: page, perPage: perPage);
+    } on DioException {
+      throw const NetworkLoadException();
+    } on CheckedFromJsonException {
+      throw const ServerLoadException();
+    } on FormatException {
+      throw const ServerLoadException();
+    }
+  }
+
+  @override
   Future<List<CountryDto>> getCountries() async {
     try {
       final countries = <CountryDto>[];

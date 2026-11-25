@@ -82,7 +82,7 @@ class _CountryListViewState extends State<_CountryListView> {
     if (loaded != null &&
         loaded.hasMore &&
         !loaded.isLoadingMore &&
-        !loaded.isGdpLoading) {
+        loaded.gdpStatus != GdpStatus.loading) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => _loadMoreIfViewportNotFilled(),
       );
@@ -109,12 +109,12 @@ class _CountryListViewState extends State<_CountryListView> {
             ),
           ),
 
-          if (loaded?.isGdpLoading ?? false)
+          if (loaded?.gdpStatus == GdpStatus.loading)
             const LinearProgressIndicator(minHeight: 2.0)
           else
             const SizedBox(height: 2.0),
 
-          if (loaded?.gdpFailed ?? false)
+          if (loaded?.gdpStatus == GdpStatus.failed)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(

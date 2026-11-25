@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CountryListCubit extends Cubit<CountryListState> {
   static const int pageSize = 20;
   static const Duration debounceDelay = Duration(milliseconds: 350);
-  static const Duration minLoadingDuration = Duration(milliseconds: 500);
 
   final INetworkCountryRepository repository;
 
@@ -52,7 +51,7 @@ class CountryListCubit extends Cubit<CountryListState> {
         !current.hasMore ||
         _loadingMore ||
         current.isLoadingMore ||
-        current.isGdpLoading ||
+        current.gdpStatus == GdpStatus.loading ||
         current.query != _query ||
         (_debounce?.isActive ?? false)) {
       return;
@@ -62,7 +61,6 @@ class CountryListCubit extends Cubit<CountryListState> {
     emit(current.copyWith(isLoadingMore: true));
 
     final requestId = _requestId;
-    final stopwatch = Stopwatch()..start();
 
     try {
       final next = await repository.getCountries(
@@ -71,7 +69,6 @@ class CountryListCubit extends Cubit<CountryListState> {
         filter: _query,
         withGdp: _gdpLoaded,
       );
-      await _waitMinLoading(stopwatch);
       if (_isStale(requestId)) return;
 
       if (next.isGdpLoaded != _gdpLoaded) {
@@ -90,11 +87,10 @@ class CountryListCubit extends Cubit<CountryListState> {
           items: _items,
           total: _total,
           hasMore: next.hasMore,
-          isGdpLoaded: _gdpLoaded,
+          gdpStatus: _gdpLoaded ? GdpStatus.loaded : current.gdpStatus,
         ),
       );
     } on LoadException {
-      await _waitMinLoading(stopwatch);
       _loadingMore = false;
       if (_isStale(requestId)) return;
 
@@ -108,12 +104,11 @@ class CountryListCubit extends Cubit<CountryListState> {
   Future<void> retryGdp() async {
     final current = state;
     if (current is! CountryListLoaded ||
-        current.isGdpLoaded ||
-        current.isGdpLoading) {
+        current.gdpStatus != GdpStatus.failed) {
       return;
     }
 
-    emit(current.copyWith(isGdpLoading: true, gdpFailed: false));
+    emit(current.copyWith(gdpStatus: GdpStatus.loading));
     await _loadGdp(_requestId);
   }
 
@@ -145,8 +140,7 @@ class CountryListCubit extends Cubit<CountryListState> {
           items: _items,
           total: _total,
           hasMore: first.hasMore,
-          isGdpLoading: !_gdpLoaded,
-          isGdpLoaded: _gdpLoaded,
+          gdpStatus: _gdpLoaded ? GdpStatus.loaded : GdpStatus.loading,
         ),
       );
 
@@ -180,7 +174,7 @@ class CountryListCubit extends Cubit<CountryListState> {
           items: _items,
           total: _total,
           hasMore: enriched.hasMore,
-          isGdpLoaded: true,
+          gdpStatus: GdpStatus.loaded,
         ),
       );
     } on LoadException {
@@ -188,15 +182,8 @@ class CountryListCubit extends Cubit<CountryListState> {
 
       final stateNow = state;
       if (stateNow is CountryListLoaded) {
-        emit(stateNow.copyWith(isGdpLoading: false, gdpFailed: true));
+        emit(stateNow.copyWith(gdpStatus: GdpStatus.failed));
       }
-    }
-  }
-
-  Future<void> _waitMinLoading(Stopwatch stopwatch) async {
-    final remaining = minLoadingDuration - stopwatch.elapsed;
-    if (remaining > Duration.zero) {
-      await Future<void>.delayed(remaining);
     }
   }
 
